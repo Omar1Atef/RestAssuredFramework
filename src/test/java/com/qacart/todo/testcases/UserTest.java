@@ -1,145 +1,78 @@
 package com.qacart.todo.testcases;
 
-import com.qacart.todo.pojo.Users;
+import com.qacart.todo.Pojo.Error;
+import com.qacart.todo.Pojo.Users;
+import com.qacart.todo.api.userApi;
+import com.qacart.todo.constants.ErrorMessages;
+import com.qacart.todo.steps.userSteps;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
 
-import static io.restassured.RestAssured.*;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 
 public class UserTest
 {
     @Test
     public void shouldBeAbleToRegisterTest()
     {
-//        String body  = "{\n" +
-//                "    \"firstName\" : \"Omar\",\n" +
-//                "    \"lastName\" : \"Atef\",\n" +
-//                "    \"email\" : \"omaratef67@gmail.com\",\n" +
-//                "    \"password\": \"12345678\"\n" +
-//                "}";
-
-        Users users = new Users();
-        users.setFirstName("Omar");
-        users.setLastName("Atef");
-        users.setEmail("Mbabbe755@gmail.com");
-        users.setPassword("12345678");
-
-        Response response = given()
-                .log().all()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType("application/json")
-                .body(users).
-
-        when()
-                .post("/api/v1/users/register").
-        then()
-                .log().all().extract().response();
-        System.out.println(response);
+        Users users = userSteps.generateDataUser();
+        Response response = userApi.register(users);
+        Users returnUser = response.body().as(Users.class);
 
         assertThat(response.statusCode(),equalTo(201));
-        assertThat(response.jsonPath().getString("firstName"), equalTo("Omar"));
-
+        assertThat(returnUser.getFirstName(),equalTo(users.getFirstName()));
     }
 
     @Test
     public void shouldNotBeAbleToRegisterWithSameEmailTest()
     {
-//        String signup = "{\n" +
-//                "    \"firstName\" : \"Omar\",\n" +
-//                "    \"lastName\" : \"Atef\",\n" +
-//                "    \"email\" : \"omaratef676@gmail.com\",\n" +
-//                "    \"password\": \"12345678\"\n" +
-//                "}";
-
-        Users users = new Users();
-        users.setFirstName("Omar");
-        users.setLastName("Atef");
-        users.setEmail("Mbabbe@gmail.com");
-        users.setPassword("12345678");
-
-        Response response = given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType("application/json")
-                .body(users)
-                .log().all().
-        when()
-                .post("/api/v1/users/register").
-        then()
-                .log().all().extract().response();
+        Users users = userSteps.getAlreadyRegisteredDataUser();
+        Response response =userApi.register(users);
+        Error error = response.body().as(Error.class);
 
         assertThat(response.statusCode(),equalTo(400));
-        assertThat(response.jsonPath().getString("message"), equalTo("Email is already exists in the Database"));
+        assertThat(error.getMessage(),equalTo(ErrorMessages.EMAIL_ALREADY_REGISTERED));
     }
 
     @Test
     public void shouldBeAbleToLoginTest()
     {
-//        String login = "{\n" +
-//                "\"email\":\"omaratef676@gmail.com\",\n" +
-//                "\"password\":\"12345678\"\n" +
-//                "}\n";
-
-        Users users = new Users("Mbabbe@gmail.com","12345678");
-
-        Response response = given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType("application/json")
-                .body(users)
-                .log().all().
-                when()
-                .post("/api/v1/users/login").
-                then()
-                .log().all().extract().response();
+        Users users = userSteps.getAlreadyRegisteredDataUser(); //3lshan a3ml login lazm akon awl registered
+        Users loginUser = new Users(users.getEmail(),users.getPassword());
+//tricky e7na mfrod hnb3t users bs users 3bara 3n : email password first name and last name wna 3yz fl login ab3t email and password bs flw b3t users hydeni error f3mlt object gded mn nfs class bs edeto bs email and password
+        Response response = userApi.login(loginUser);
+        Users returnUser = response.body().as(Users.class);
 
         assertThat(response.statusCode(),equalTo(200));
-        assertThat(response.jsonPath().getString("firstName"), equalTo("Omar"));
-        assertThat(response.jsonPath().getString("access_token"),not(equalTo(null))); //3lshan access token byt8yr kol mra b3ml login
-
+        assertThat(returnUser.getFirstName(),equalTo(users.getFirstName()));
+        assertThat(returnUser.getAccess_token(),not(equalTo("null")));
     }
 
     @Test
     public void shouldNotBeAbleToLoginWithWrongPasswordTest()
     {
-//        String login = "{\"email\":\"omaratef676@gmail.com\",\"password\":\"123456789\"}";
-
-        Users users = new Users("Mbabbe@gmail.com","123456789");
-
-        Response response = given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType("application/json")
-                .body(users)
-                .log().all().
-                when()
-                .post("/api/v1/users/login").
-                then()
-                .log().all().extract().response();
+        Users users = userSteps.getAlreadyRegisteredDataUser();
+        Users loginUser = new Users(users.getEmail(),"87654321");
+        Response response = userApi.login(loginUser);
+        Error error = response.body().as(Error.class);
 
         assertThat(response.statusCode(),equalTo(401));
-        assertThat(response.jsonPath().getString("message"), equalTo("The email and password combination is not correct, please fill a correct email and password"));
-
+        assertThat(error.getMessage(),equalTo(ErrorMessages.EMAIL_OR_PASSWORD_WRONG));
     }
 
     @Test
     public void shouldNotBeAbleToLoginWithWrongEmailTest()
     {
-//        String login = "{\"email\":\"omaratf676@gmail.com\",\"password\":\"12345678\"}";
-
-        Users users = new Users("Mbabbee@gmail.com","123456789");
-
-        Response response = given()
-                .baseUri("https://qacart-todo.herokuapp.com")
-                .contentType("application/json")
-                .body(users)
-                .log().all().
-                when()
-                .post("/api/v1/users/login").
-                then()
-                .log().all().extract().response();
+        Users users = userSteps.getAlreadyRegisteredDataUser();
+        Users loginUser = new Users("omar@gmail.com", users.getPassword());
+        Response response = userApi.login(loginUser);
+        Error error = response.body().as(Error.class);
 
         assertThat(response.statusCode(),equalTo(400));
-        assertThat(response.jsonPath().getString("message"), equalTo("We could not find the email in the database"));
-
+        assertThat(error.getMessage(),equalTo(ErrorMessages.LOGIN_WITH_NOT_REGISTERED_EMAIL));
     }
+
 }
