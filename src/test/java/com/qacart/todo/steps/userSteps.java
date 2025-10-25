@@ -8,7 +8,7 @@ import io.restassured.response.Response;
 public class userSteps
 {
     //bdl mkont adelo el data static
-    public static Users generateDataUser() //not registered yet /b3ml generate register data for user
+    public static Users generateDataUser() //not registered yet b3ml generate register data for user
     {
         Faker faker = new Faker();
 

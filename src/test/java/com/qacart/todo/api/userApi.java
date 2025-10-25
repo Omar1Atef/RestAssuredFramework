@@ -13,9 +13,9 @@ public class userApi
     public static Response register(Users users)
     {
          return given()
+                .log().all()
                 .spec(Specs.getRequestSpec())
-                .body(users)
-                .log().all().
+                .body(users).
         when()
                 .post(Resources.REGISTER_PATH).
         then()
