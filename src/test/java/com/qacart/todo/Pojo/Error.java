@@ -1,4 +1,4 @@
-package com.qacart.todo.Pojo;
+package com.qacart.todo.pojo;
 
 public class Error
 {

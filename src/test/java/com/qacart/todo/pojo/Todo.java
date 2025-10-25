@@ -1,4 +1,4 @@
-package com.qacart.todo.Pojo;
+package com.qacart.todo.pojo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,7 +1,7 @@
 package com.qacart.todo.testcases;
 
-import com.qacart.todo.Pojo.Error;
-import com.qacart.todo.Pojo.Todo;
+import com.qacart.todo.pojo.Error;
+import com.qacart.todo.pojo.Todo;
 import com.qacart.todo.api.todoApi;
 import com.qacart.todo.constants.ErrorMessages;
 import com.qacart.todo.steps.todoSteps;
@@ -9,9 +9,7 @@ import com.qacart.todo.steps.userSteps;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
 
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 
 public class TodoTest

@@ -1,7 +1,7 @@
 package com.qacart.todo.steps;
 
 import com.github.javafaker.Faker;
-import com.qacart.todo.Pojo.Users;
+import com.qacart.todo.pojo.Users;
 import com.qacart.todo.api.userApi;
 import io.restassured.response.Response;
 

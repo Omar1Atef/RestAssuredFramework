@@ -1,6 +1,6 @@
 package com.qacart.todo.api;
 
-import com.qacart.todo.Pojo.Todo;
+import com.qacart.todo.pojo.Todo;
 import com.qacart.todo.RMRequestSpecification.Specs;
 import com.qacart.todo.constants.Resources;
 import io.restassured.response.Response;

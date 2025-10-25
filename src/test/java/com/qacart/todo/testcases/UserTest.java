@@ -1,14 +1,13 @@
 package com.qacart.todo.testcases;
 
-import com.qacart.todo.Pojo.Error;
-import com.qacart.todo.Pojo.Users;
+import com.qacart.todo.pojo.Error;
+import com.qacart.todo.pojo.Users;
 import com.qacart.todo.api.userApi;
 import com.qacart.todo.constants.ErrorMessages;
 import com.qacart.todo.steps.userSteps;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
 
-import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
